@@ -1,20 +1,35 @@
 import { View, Text, SafeAreaView, Image, StatusBar, TextInput, ScrollView } from 'react-native'
-import React, { useLayoutEffect } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { ChevronDownIcon, UserIcon, AdjustmentsVerticalIcon, MagnifyingGlassIcon } from "react-native-heroicons/outline";
 import Categories from '../components/Categories';
 import FeaturedRow from '../components/FeaturedRow';
-
+import sanityClient from '../sanity'
 
 
 export default function HomeScreen() {
     const navigation = useNavigation();
+    const [featuredCategories, setFeaturedCategories] = useState([]);
 
     useLayoutEffect(() => {
         navigation.setOptions({
             headerShown: false,
         })
     }, []);
+
+    useEffect(() => {
+        sanityClient.fetch(`
+        *[_type == "featured"] {
+                    ...,
+                    restaurants[]->{
+                        ...,
+                    dishes[]->
+                    },
+        }
+        `).then(data => {
+            setFeaturedCategories(data);
+        })
+    }, [])
 
     return (
         <SafeAreaView style={{ marginTop: StatusBar.currentHeight }} className="bg-white pt-5 ">
@@ -64,8 +79,28 @@ export default function HomeScreen() {
                 <Categories />
 
                 {/* Featured rows */}
-                <FeaturedRow />
-                
+
+                {/* Featured */}
+                <FeaturedRow
+                    id="123"
+                    title="Featured"
+                    description="Paid placements from our partners"
+                />
+
+                {/* tasty Discounts  */}
+                <FeaturedRow
+                    id="234"
+                    title="Featured"
+                    description="Paid placements from our partners"
+                />
+
+                {/* Offers near you */}
+                <FeaturedRow
+                    id="345"
+                    title="Featured"
+                    description="Paid placements from our partners"
+                />
+
             </ScrollView>
         </SafeAreaView>
     )
