@@ -47,11 +47,11 @@ export default function App() {
             name="Delivery"
             component={DeliveryScreen}
             options={{
-              presentation: 'modal',
+              presentation: 'fullScreenModal',
               headerShown: false
             }} 
           />
-          
+
         </Stack.Navigator>
         </Provider>
       </NavigationContainer>
